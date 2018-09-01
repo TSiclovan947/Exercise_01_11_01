@@ -20,12 +20,11 @@ function getRequestObject() {
     //Instantiate an XHR object
     try {
         httpRequest = new XMLHttpRequest();
-    }
-    catch (errorMessage) {
+    } catch (errorMessage) {
         document.querySelector("p.error").innerHTML = "Forecast not supported by your browser.";
         document.querySelector("p.error").style.display = "block";
         return false;
-}
+    }
     return httpRequest;
 }
 
@@ -40,8 +39,48 @@ function fillWeather() {
         var dayOfWeek = dateValue.getDay();
         var rows = document.querySelectorAll("section.week table tbody tr");
         document.querySelector("section.week table caption").innerHTML = selectedCity;
+        //Retrieve the row cells
+        for (var i = 0; i < rows.length; i++) {
+            var firstCell = rows[i].getElementsByTagName("td")[0];
+            var secondCell = rows[i].getElementsByTagName("td")[1];
+            var thirdCell = rows[i].getElementsByTagName("td")[2];
+            //Set the week day for the row
+            firstCell.innerHTML = days[dayOfWeek];
+            if (dayOfWeek + 1 === 7) {
+                dayOfWeek = 0;
+            } else {
+                dayOfWeek++;
+            }
+            //Get the percentage of sunlight
+            var sun = Math.round((1 - weatherReport.daily.data[i].cloudCover) * 100, 0);
+            //Change colors of sun symbol based on pecentage
+            if (sun > 90) {
+                secondCell.style.color = "rgb(255, 171, 0)";
+            } else if (sun > 80) {
+                secondCell.style.color = "rgb(255, 179, 25)";
+            } else if (sun > 70) {
+                secondCell.style.color = "rgb(255, 188, 51)";
+            } else if (sun > 60) {
+                secondCell.style.color = "rgb(255, 196, 77)";
+            } else if (sun > 50) {
+                secondCell.style.color = "rgb(255, 205, 102)";
+            } else if (sun > 40) {
+                secondCell.style.color = "rgb(255, 213, 128)";
+            } else if (sun > 30) {
+                secondCell.style.color = "rgb(255, 221, 153)";
+            } else if (sun > 20) {
+                secondCell.style.color = "rgb(255, 230, 179)";
+            } else if (sun > 10) {
+                secondCell.style.color = "rgb(255, 238, 204)";
+            }
+            secondCell.style.fontSize = "2.5em";
+            thirdCell.innerHTML = sun + "%";
+        }
+
+        //Turn on table display
         document.querySelector("section.week table caption").style.display = "block";
         document.querySelector("section.week table").style.display = "inline-block";
+        document.querySelector("section.week p.credit").style.display = "block";
     }
 }
 
